@@ -1,4 +1,6 @@
 # /bin/bash
+PORT=/dev/tty.usbmodem1411
+
 AVR="/Applications/Adafruit Arduino 1.0.5.app/Contents/Resources/Java/hardware/tools/avr"
 AVRDUDE="$AVR/bin/avrdude"
 AVRCONF="$AVR/etc/avrdude.conf"
@@ -21,6 +23,6 @@ EFUSE=0xFF
 #echo $EFUSE
 
 echo Writing fuses...
-"$AVRDUDE" -C"$AVRCONF" -pattiny85 -cstk500v1 -P/dev/tty.usbmodem1411 -b19200 -U lfuse:w:${LFUSE}:m -U hfuse:w:${HFUSE}:m -U efuse:w:${EFUSE}:m
+"$AVRDUDE" -C"$AVRCONF" -pattiny85 -cstk500v1 -P$PORT -b19200 -U lfuse:w:${LFUSE}:m -U hfuse:w:${HFUSE}:m -U efuse:w:${EFUSE}:m
 echo Done
 

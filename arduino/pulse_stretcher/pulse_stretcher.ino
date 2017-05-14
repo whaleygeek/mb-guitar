@@ -7,7 +7,7 @@
 
 #define TRIGGER   3 // PB3
 #define HOLD      4 // PB4
-#define ONTIME_MS 1000
+#define ONTIME_MS 20
 
 void setup() 
 {                
@@ -21,7 +21,7 @@ void loop()
     //NOTE: no glitch filtering
     if (digitalRead(TRIGGER)) 
     {
-        digitalWrite(HOLD, HIGH)
+        digitalWrite(HOLD, HIGH);
         delay(ONTIME_MS);
 
         // wait for input to go low before resetting
