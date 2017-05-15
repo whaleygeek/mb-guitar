@@ -1,6 +1,9 @@
 from microbit import *
 import radio
 
+def print(*args, **kwargs):
+    pass # disable print, now UART is in use
+    
 class MIDI():
     NOTE_ON  = 0x90
     NOTE_OFF = 0x80
@@ -49,22 +52,21 @@ def get_message():
                     return text
 
         except Exception as e: # reset radio on error
-            print("reset %s" % str(e))
             radio.off()
             radio.on()
 
 midi = MIDI()
 
-##radio.config(channel=7, address=0x75626974, group=132, data_rate=radio.RATE_1MBIT)
+radio.config(channel=7, address=0x75626974, group=0, data_rate=radio.RATE_1MBIT)
 radio.on()
+display.show(Image.DIAMOND_SMALL)
 
 while True:
-    try:
-        msg = get_message()
-        print(msg)
+    msg = get_message()
 
-        # any message, just trigger a midi on/off
-        midi.note_on(40)
-        sleep(100)
-        midi.note_off(40)
-
+    # any message, just trigger a midi on/off
+    display.show(Image.DIAMOND)
+    midi.note_on(40)
+    sleep(50)
+    midi.note_off(40)
+    display.show(Image.DIAMOND_SMALL)
