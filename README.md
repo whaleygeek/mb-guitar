@@ -8,6 +8,12 @@ It is basically a configurable pulse stretcher. The impulse from the piezo
 hit is quite short in practice, and without a high speed trigger interrupt
 enabled by default on the micro:bit, it's easy to miss the piezo pulse.
 
+PB0 is the trigger in from the piezo (which is protected by a 3V3 zenner
+to prevent over voltage, a 1N4148 to prevent under voltage, and a 1M
+resistor to prevent any residual charge building up on the piezo).
+
+PB4 is the HOLD output, and it is configured to generate a 50ms pulse.
+
 I spent a happy evening brushing up my electronics skills, building a 
 two-transistor monostable that acted as a pulse stretcher. I then
 discovered that I needed a really high impedance input in order to be
