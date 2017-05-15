@@ -5,9 +5,9 @@
  * thus using it as an input device.
  */
 
-#define TRIGGER   3 // PB3
+#define TRIGGER   0 // PB0
 #define HOLD      4 // PB4
-#define ONTIME_MS 20
+#define ONTIME_MS 50
 
 void setup() 
 {                
