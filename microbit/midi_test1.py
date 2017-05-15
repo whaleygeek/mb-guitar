@@ -1,5 +1,4 @@
 from microbit import *
-import radio
 
 class MIDI():
     NOTE_ON  = 0x90
@@ -20,7 +19,7 @@ class MIDI():
     def __init__(self, channel=0, velocity=0x7F):
         self.channel = channel
         self.velocity = velocity
-
+        
     def set_instrument(self, instrument):
         instrument -= 1
         if instrument<0 or instrument>0x7F: return
@@ -38,33 +37,34 @@ class MIDI():
         if velocity<0 or velocity>0x7F: velocity=0x7F
         self.send(self.NOTE_OFF|self.channel, note, velocity)
 
-def get_message():
-    while True:
-        try:
-            msg = radio.receive_bytes()
-            if msg is not None:
-                if len(msg) >= 13 and msg[3] == 2:
-                    lstr = msg[12] # length byte
-                    text = str(msg[13:13+lstr], 'ascii')
-                    return text
-
-        except Exception as e: # reset radio on error
-            print("reset %s" % str(e))
-            radio.off()
-            radio.on()
-
 midi = MIDI()
 
-##radio.config(channel=7, address=0x75626974, group=132, data_rate=radio.RATE_1MBIT)
-radio.on()
+def slide():
+    while True:
+        for n in range(20, 90):
+            midi.note_on(n)
+            sleep(10)
+            midi.note_off(n)
+            sleep(10)
 
-while True:
-    try:
-        msg = get_message()
-        print(msg)
-
-        # any message, just trigger a midi on/off
-        midi.note_on(40)
-        sleep(100)
-        midi.note_off(40)
+def acc():
+    min_n = 20 # 0
+    max_n = 90 # 127
+    prev_n = None
+    while True:
+        x = accelerometer.get_x()
+        x = min(x, 1000)
+        x = max(x, -1000)
+        x += 1000
+        n = min_n + x / (2000/(max_n-min_n))
+        n = int(n)
+        
+        if prev_n is None or prev_n != n:
+            if prev_n is not None:
+                midi.note_off(prev_n)
+             
+            midi.note_on(n)
+            prev_n = n
+        
+acc()
 
