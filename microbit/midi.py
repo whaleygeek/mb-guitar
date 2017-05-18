@@ -50,10 +50,12 @@ def get_message():
                     lstr = msg[12] # length byte
                     text = str(msg[13:13+lstr], 'ascii')
                     return text
-
+            else:
+                return None
+                
         except Exception as e: # reset radio on error
             radio.off()
-            radio.on()
+            radio.on()            
 
 midi = MIDI()
 
@@ -62,11 +64,16 @@ radio.on()
 display.show(Image.DIAMOND_SMALL)
 
 while True:
-    msg = get_message()
 
-    # any message, just trigger a midi on/off
-    display.show(Image.DIAMOND)
-    midi.note_on(40)
-    sleep(50)
-    midi.note_off(40)
-    display.show(Image.DIAMOND_SMALL)
+    if button_a.was_pressed():
+        msg = "PLUCK"
+    else:
+        msg = get_message()
+        
+    if msg is not None:            
+        # any message, just trigger a midi on/off
+        display.show(Image.DIAMOND)
+        midi.note_on(40)
+        sleep(50)
+        midi.note_off(40)
+        display.show(Image.DIAMOND_SMALL)
