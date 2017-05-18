@@ -63,17 +63,41 @@ radio.config(channel=7, address=0x75626974, group=0, data_rate=radio.RATE_1MBIT)
 radio.on()
 display.show(Image.DIAMOND_SMALL)
 
+def get_note():
+    middle_c = 60 # C4
+    x = accelerometer.get_x()
+    x = min(x, 1000)
+    x = max(x, -1000)
+    x = int(x / 42)
+    note = x + middle_c
+    return note
+
+hold = None
+
 while True:
 
+    note = get_note()
+
     if button_a.was_pressed():
-        msg = "PLUCK"
-    else:
-        msg = get_message()
-        
-    if msg is not None:            
-        # any message, just trigger a midi on/off
         display.show(Image.DIAMOND)
-        midi.note_on(40)
+        midi.note_on(note)
         sleep(50)
-        midi.note_off(40)
+        midi.note_off(note)
         display.show(Image.DIAMOND_SMALL)
+
+    elif button_b.is_pressed():
+        if not hold:
+            hold = note
+            midi.note_on(note)
+    else:
+        if hold:
+            midi.note_off(hold)
+            hold = None
+            
+        msg = get_message()
+        if msg is not None:
+            display.show(Image.DIAMOND)
+            midi.note_on(note)
+            sleep(50)
+            midi.note_off(note)
+            display.show(Image.DIAMOND_SMALL)
